@@ -71,7 +71,6 @@ public class userInt {
 		  				}
 		  				break;
 					case 6: if (!fileSaved) {
-						String save = null;
 						JOptionPane.showMessageDialog(null, "\n*** WARNING: New data has NOT been saved ***\n");
 
 							System.out.print ("Do you wish to save the new data? (y or n) ");
@@ -90,7 +89,7 @@ public class userInt {
 					finished = true; // stops the while loop
 					JOptionPane.showMessageDialog(null, "\n*** Program Ended ***\n *** Thank you for using this program ***\n");
 					break;
-					default: System.out.println ("\n** Invalid Selection **\n");
+					default: JOptionPane.showMessageDialog(null, "\n** Invalid Selection **\n");
 				} // end switch
 			} // end while loop
 		} // end begin()
@@ -115,7 +114,7 @@ public class userInt {
 			
 			System.out.print ("is it urgent? y or n");
 			String[] yesNo = new String[] {"Yes", "No"};
-			int answer = JOptionPane.showOptionDialog(null, "is it urgent?", "GST calculator", JOptionPane.DEFAULT_OPTION,
+			int answer = JOptionPane.showOptionDialog(null, "is it urgent?", "Title", JOptionPane.DEFAULT_OPTION,
 							JOptionPane.PLAIN_MESSAGE,null, yesNo, yesNo[0]);
 			boolean urgent = false;
 				if(answer == 0){
@@ -124,55 +123,47 @@ public class userInt {
 					urgent = false;
 				}	
 			
-			System.out.print("what is the cost involved?");
-			double cost = input.nextDouble();
-			
+				String ans = JOptionPane.showInputDialog (null, "what is the cost involved?");
+				double cost = Double.parseDouble(ans);
 			PersonalTask x = new PersonalTask(aTitle,theDetails,dueWhen,urgent,resources,cost);
 			return x;
 		}
 
 		public StudyTask addStudyTask (Scanner input) {
 
-			System.out.print ("\nWhat is the title of the task? ");
-			String aTitle = input.nextLine().trim();  
+			String aTitle = JOptionPane.showInputDialog ("\nWhat is the title of the task? ");
 
-			System.out.print ("please describe what is required to complete " + aTitle);
-			String theDetails = input.nextLine().trim();
+			String theDetails = JOptionPane.showInputDialog ("please describe what is required to complete " + aTitle);
 
-				System.out.print ("When is " + aTitle + " due?");
-				String dueWhen = input.nextLine().trim();
+			String dueWhen = JOptionPane.showInputDialog ("When is " + aTitle + " due?");
 				
-				System.out.print ("is this assesment graded? y/n");
-				String answer = input.nextLine().trim();
+			String[] yesNo = new String[] {"Yes", "No"};
+			int answer = JOptionPane.showOptionDialog(null,"is this assesment graded? y/n", "title", JOptionPane.DEFAULT_OPTION,
+					JOptionPane.PLAIN_MESSAGE,null, yesNo, yesNo[0]);
 				boolean graded = false;
-				if(answer.equals("y")){
+				if(answer == 0){
 					graded = true;
 				}else{
 					graded = false;
 				
 				}	
 				
-			String Subject = null;
-
-				System.out.print ("What subject is " + aTitle + " for (webdesign, SQL, buildADatabase, HealthAndSafety, Sustainability or OOP)? ");
-				Subject = input.nextLine().trim();
-				if (!Subject.equals ("webdesign") && !Subject.equals ("SQL") && !Subject.equals ("buildADatabase") &&!Subject.equals ("HealthAndSafety") && !Subject.equals ("Sustainability") && !Subject.equals ("OOP")) {
-					System.out.println ("Error - subject must be webdesign, SQL, buildADatabase, HealthAndSafety, Sustainability or OOP");
-				}while (!Subject.equals ("webdesign") && !Subject.equals ("SQL") && !Subject.equals ("buildADatabase") &&!Subject.equals ("HealthAndSafety") && !Subject.equalsIgnoreCase("Sustainability") && !Subject.equalsIgnoreCase("OOP")){
-					System.out.print ("What subject is " + aTitle + " for? ");
-					Subject = input.nextLine().trim();
-		}
+			String[] subject = new String[] {"webdesign", "SQL","buildADatabase","HealthAndSafety","Sustainability","OOP"};
+			int result = JOptionPane.showOptionDialog(null,"What subject is " + aTitle + "for?", "title", JOptionPane.DEFAULT_OPTION,
+					JOptionPane.PLAIN_MESSAGE,null, subject, subject[0]);
+			String resultSubject = subject[result];
 			
 			double tM;
+			
 			do { 
-				System.out.print ("How many marks is " + aTitle + " worth?");
-				tM = (int) input.nextDouble();
+				String tm = JOptionPane.showInputDialog ("How many marks is " + aTitle + " worth?");
+				tM = Double.parseDouble(tm);
 				if (tM < 0) {
-					System.out.println ("Error - value must be zero or more");
+					JOptionPane.showMessageDialog(null, "Error - value must be zero or more");
 				}
 			} while (tM < 0);
 
-			StudyTask e = new StudyTask (aTitle, theDetails , dueWhen,graded, Subject , tM);
+			StudyTask e = new StudyTask (aTitle, theDetails , dueWhen,graded, resultSubject , tM);
 
 			return e;
 
@@ -181,7 +172,7 @@ public class userInt {
 		public boolean saveFile (String fileName, DataStorage list) throws IOException {
 			TaskWorker pw = new TaskWorker ();
 			pw.saveFile (fileName, list); // assuming file name
-			System.out.println ("\n** Data Successfully Saved **\n");
+			JOptionPane.showMessageDialog(null, "\n** Data Successfully Saved **\n");
 			return true;
 		}
 
