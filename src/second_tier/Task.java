@@ -1,15 +1,22 @@
+
 package second_tier;
 
 import java.io.Serializable;
 
+/**
+ * abstract superclass of PersonalTask and StudyTask
+ */
 
 public abstract class Task implements Serializable{
 
 	private static final long serialVersionUID = 100L;
 	// task attributes
 	protected String title, details, dueDate;
+	protected int id = 0;
 
 	// the constructors
+	
+	Task(){};
 	Task (String aTitle, String theDetails, String dueWhen) {
 		dueDate = dueWhen;
 		title = aTitle;
@@ -17,6 +24,10 @@ public abstract class Task implements Serializable{
 	}
 
 	// the mutators
+	
+	public void setId(int id) {
+		this.id = id;
+	}
 	public void setTitle (String aTitle) {
 		title = aTitle;
 	}
@@ -28,6 +39,9 @@ public abstract class Task implements Serializable{
 	}
 
 	// the accessors
+	public int getId() {
+		return id;
+	}
 	public String getTitle () {
 		return title;
 	}
@@ -42,5 +56,6 @@ public abstract class Task implements Serializable{
 	public String toString () {
 		return "\nTitle: " + title + "\nDetails: " + details +  "\nDue Date: " + dueDate;
 	}
+	
 
 } // end task class

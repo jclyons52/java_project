@@ -4,11 +4,12 @@ package third_tier;
 	import java.io.*;
 
 	import second_tier.*;
-
+	/**
+	 * reads file from storage and returns an array list of its items
+	 */
 	public class TaskFileReader {
 		@SuppressWarnings("unchecked")
 		public ArrayList<Task> openFile (String fileName) throws ClassNotFoundException, IOException, FileNotFoundException {
-
 			ObjectInputStream objIn = new ObjectInputStream (new FileInputStream (fileName));
 			ArrayList<Task> list = new ArrayList<Task>();
 			list = (ArrayList<Task>) objIn.readObject(); // we know it's an ArrayList<Task>!!
