@@ -1,29 +1,35 @@
 
 package second_tier;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
-import third_tier.TaskFileReader;
-import third_tier.TaskFileWriter;
+import third_tier.tables.PersonalTaskManager;
+import third_tier.tables.StudyTaskManager;
 
 /**
  * handles interaction between UI and IO layers of project
  */
 public class TaskWorker {
 	
-	public ArrayList<Task> openFile (String fileName) throws ClassNotFoundException, IOException, FileNotFoundException {
+	public ArrayList<Task> open () throws SQLException {
 		//opens file from storage
-		TaskFileReader pfr = new TaskFileReader ();
-		ArrayList<Task> list = pfr.openFile (fileName);
+		ArrayList<Task> list = StudyTaskManager.display();
+		list.addAll(PersonalTaskManager.display());
 		return list;
 	}
 
-	public void saveFile (String fileName, DataStorage list) throws IOException {
+	public boolean saveFile (ArrayList<Task> list) throws Exception {
 		//saves file to storage
-		TaskFileWriter pfw = new TaskFileWriter ();
-		pfw.saveFile (fileName, list);
+		boolean result = false;
+		for (Task task : list) {
+			if (task instanceof StudyTask) {
+				result = StudyTaskManager.save((StudyTask) task);
+			} else {
+				result = PersonalTaskManager.save((PersonalTask) task);
+			}
+		}
+		return result;
 	}
 
 }

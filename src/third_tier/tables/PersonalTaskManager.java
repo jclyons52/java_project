@@ -26,6 +26,7 @@ private static Connection conn = ConnectionManager.getInstance().getConnection()
 			
 			while (rs.next()) {
 				PersonalTask bean = new PersonalTask();
+				bean.setId(rs.getInt("id"));
 				bean.setTitle(rs.getString("title"));
 				bean.setDetails(rs.getString("details"));
 				bean.setDueDate(rs.getString("due_date"));
@@ -83,7 +84,7 @@ private static Connection conn = ConnectionManager.getInstance().getConnection()
 	
 	private static boolean insert(PersonalTask bean) throws Exception {
 
-		String sql = "INSERT into study_task (title, details, due_date, important, requirements, cost) " +
+		String sql = "INSERT into personal_tasks (title, details, due_date, important, requirements, cost) " +
 				"VALUES (?, ?, ?, ?, ?, ?)";
 		ResultSet keys = null;
 		try (
@@ -120,7 +121,7 @@ private static Connection conn = ConnectionManager.getInstance().getConnection()
 	private static boolean update(PersonalTask bean) throws Exception {
 
 		String sql =
-				"UPDATE study_task SET " +
+				"UPDATE personal_tasks SET " +
 				"title = ?, details = ?, due_date = ?, important = ?, requirements = ?, cost = ? " +
 				"WHERE id = ?";
 		try (
@@ -148,5 +149,28 @@ private static Connection conn = ConnectionManager.getInstance().getConnection()
 			return false;
 		}
 
+	}
+	
+	public static boolean delete(int personalTaskId) throws SQLException{
+		String sql = "DELETE FROM personal_tasks WHERE id = ? LIMIT 1";
+		try (
+				PreparedStatement stmt = conn.prepareStatement(sql);
+				){
+			
+			stmt.setInt(1, personalTaskId);
+			int affected = stmt.executeUpdate();
+			
+			if (affected == 1) {
+				return true;
+			} else {
+				return false;
+			}
+			
+		}
+		catch(SQLException e) {
+			System.err.println(e);
+			return false;
+		}
+		
 	}
 }

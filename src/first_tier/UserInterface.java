@@ -6,7 +6,9 @@ import javax.swing.*;
 import second_tier.DataStorage;
 import second_tier.PersonalTask;
 import second_tier.StudyTask;
+import second_tier.Task;
 import second_tier.TaskWorker;
+import third_tier.tables.PersonalTaskManager;
 import third_tier.tables.StudyTaskManager;
 
 import java.awt.event.*;
@@ -22,6 +24,7 @@ import java.util.Scanner;
 public class UserInterface extends JFrame implements ActionListener {
 	DataStorage tasks = new DataStorage();
 	public ArrayList<String> titles = new ArrayList<String>();
+	public TaskWorker taskWorker = new TaskWorker();
 
 	public static final long serialVersionUID = 100L;
 	public JComboBox combo;
@@ -38,7 +41,6 @@ public class UserInterface extends JFrame implements ActionListener {
 		
 		// display menu and process 
 		boolean openedFile = false, fileSaved = true;
-		String fileName = "data.obj"; // assuming a file name
 
 			// default layout of a JFrame content Pane is BorderLayout
 
@@ -54,7 +56,7 @@ public class UserInterface extends JFrame implements ActionListener {
 		});
 		
 		if (!openedFile) { // addAll() appends the file data to the ArrayList data
-			tasks.addAll (StudyTaskManager.display());
+			tasks.addAll (taskWorker.open());
 			for (int i = 0; i < tasks.size(); i++) {
 				titles.add(tasks.get(i).getTitle());
 			}
@@ -112,21 +114,17 @@ public class UserInterface extends JFrame implements ActionListener {
             public void actionPerformed(ActionEvent e)
             {
             	try {
-					 saveFile (fileName, tasks);
-				} catch (IOException e1) {
+					 saveFile (tasks.getArrayList());
+				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					JOptionPane.showMessageDialog(null, "\n**** ERROR: Data cannot be saved ****\n");
 				}
             }
         });
 		
-		
 	    subPanel.add( myJButton10);
-
 	    //Now we simply add it to your main panel.
 	    getContentPane().add(subPanel, BorderLayout.WEST);
-	    
-	    
 	    
 	    subPanel5.setVisible(true);
 	    subPanel5.setBackground(Color.BLUE);
@@ -212,13 +210,14 @@ public class UserInterface extends JFrame implements ActionListener {
 
 	} 
 	
-	public boolean saveFile (String fileName, DataStorage list) throws IOException {
+	public boolean saveFile (ArrayList<Task> list) throws Exception {
 		/*
 		 * saves file to storage
 		 */
+		boolean result;
 		TaskWorker pw = new TaskWorker ();
-		pw.saveFile (fileName, list); // assuming file name
-		JOptionPane.showMessageDialog(null, "\n** Data Successfully Saved **\n");
+		result = pw.saveFile (list); // assuming file name
+		JOptionPane.showMessageDialog(null, "\n** Data Successfully Saved **\n"+result);
 		return true;
 	}
 	
@@ -227,6 +226,36 @@ public class UserInterface extends JFrame implements ActionListener {
 		
 		textArea.setText(tasks.get(i).toString());
 		
+		JButton myJButton101 = new JButton( "delete" );
+		getContentPane().add(myJButton101, BorderLayout.SOUTH);
+		myJButton101.addActionListener(new ActionListener() {
+			 
+            public void actionPerformed(ActionEvent e)
+            {
+            	if(tasks.get(i) instanceof StudyTask){
+            		try {
+						boolean result = StudyTaskManager.delete(tasks.get(i).getId());
+						if (result){
+							titles.remove(i);
+							combo.remove(i);
+						}
+					} catch (SQLException e1) {
+						e1.printStackTrace();
+					}
+            	}else{
+            		try {
+            			boolean result = PersonalTaskManager.delete(tasks.get(i).getId());
+            			if (result){
+							titles.remove(i);
+							combo.remove(i);
+						}
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+            	}
+            }
+		});
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				textScroller.getVerticalScrollBar().setValue(0);

@@ -54,7 +54,7 @@ public abstract class Task implements Serializable{
 
 	// make attributes available for display
 	public String toString () {
-		return "\nTitle: " + title + "\nDetails: " + details +  "\nDue Date: " + dueDate;
+		return "\nID: " + id +  "\nTitle: " + title + "\nDetails: " + details +  "\nDue Date: " + dueDate;
 	}
 	
 

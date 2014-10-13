@@ -42,7 +42,7 @@ public class StudyTaskManager {
 	
 	public static StudyTask display(int studyTaskId) throws SQLException {
 
-		String sql = "SELECT * FROM study_task WHERE id = ?";
+		String sql = "SELECT * FROM study_tasks WHERE id = ?";
 		ResultSet rs = null;
 
 		try (
@@ -86,7 +86,7 @@ public class StudyTaskManager {
 	
 	private static boolean insert(StudyTask bean) throws Exception {
 
-		String sql = "INSERT into study_task (title, details, due_date, graded, subject, total_marks) " +
+		String sql = "INSERT into study_tasks (title, details, due_date, graded, subject, total_marks) " +
 				"VALUES (?, ?, ?, ?, ?, ?)";
 		ResultSet keys = null;
 		try (
@@ -123,7 +123,7 @@ public class StudyTaskManager {
 	private static boolean update(StudyTask bean) throws Exception {
 
 		String sql =
-				"UPDATE study_task SET " +
+				"UPDATE study_tasks SET " +
 				"title = ?, details = ?, due_date = ?, graded = ?, subject = ?, total_marks = ? " +
 				"WHERE id = ?";
 		try (
@@ -151,5 +151,28 @@ public class StudyTaskManager {
 			return false;
 		}
 
+	}
+	
+	public static boolean delete(int studyTaskId) throws SQLException{
+		String sql = "DELETE FROM study_tasks WHERE id = ? LIMIT 1";
+		try (
+				PreparedStatement stmt = conn.prepareStatement(sql);
+				){
+			
+			stmt.setInt(1, studyTaskId);
+			int affected = stmt.executeUpdate();
+			
+			if (affected == 1) {
+				return true;
+			} else {
+				return false;
+			}
+			
+		}
+		catch(SQLException e) {
+			System.err.println(e);
+			return false;
+		}
+		
 	}
 }
