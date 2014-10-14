@@ -1,33 +1,42 @@
 package first_tier;
 
-
-import java.awt.*;
-
-import javax.swing.*;
-import third_tier.PDatabase;
-
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 
-/**
-	this is the primary user interface class, it contains the code for the border layout JPane along with the
-	UI methods for adding new tasks
-*/
-public class UserInterface extends JFrame  {
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
-	private JButton addTask, removeTask, back;
+import third_tier.SDatabase;
+
+public class StudyInterface extends JFrame {
+	
+	private JButton addTask, removeTask;
 	private JLabel errorMessage;
-	private JTextField tfDueDate, tfTitle, tfDetails, tfImportant, tfRequirements, tfCost;
+	private JTextField tfDueDate, tfTitle, tfDetails, tfGraded, tfSubject, tfTotalMarks;
 	// Instance attributes used in this example
 		private	JTable		table;
 		private	JPanel		topPanel;
 		private	JScrollPane scrollPane;
 		private JPanel      inputPanel;
 		
-		PDatabase data = new PDatabase();
+		SDatabase data = new SDatabase();
 
 	
-	public UserInterface() throws SQLException  {
+	public StudyInterface() throws SQLException  {
 		super();
 		
 		table = new JTable(data.defaultTableModel);
@@ -55,38 +64,36 @@ public class UserInterface extends JFrame  {
 	 		tfDueDate = new JTextField("due date", 6);
 	 		tfTitle = new JTextField("title", 8);
 	 		tfDetails = new JTextField("details", 8);
-	 		tfImportant = new JTextField("important", 14);
-	 		tfRequirements = new JTextField("requirements", 8);
-	 		tfCost = new JTextField("cost", 3);
+	 		tfGraded = new JTextField("graded", 14);
+	 		tfSubject = new JTextField("subject", 8);
+	 		tfTotalMarks = new JTextField("total_marks", 3);
 	 		
 	 // Create a focus listener and add it to each text field to remove text when clicked on
 			ListenForFocus focusListener = new ListenForFocus();
 			tfDueDate.addFocusListener(focusListener);
 			tfTitle.addFocusListener(focusListener);
 			tfDetails.addFocusListener(focusListener);
-			tfImportant.addFocusListener(focusListener);
-			tfRequirements.addFocusListener(focusListener);
-			tfCost.addFocusListener(focusListener);
+			tfGraded.addFocusListener(focusListener);
+			tfSubject.addFocusListener(focusListener);
+			tfTotalMarks.addFocusListener(focusListener);
 	 		
 	 	// Set button values
 	 		addTask = new JButton("Add Task");
 	 		removeTask = new JButton("Remove Task");
-//	 		back = new JButton("back to menu");
 			
 			// Add action listeners to the buttons to listen for clicks
 			ListenForAction actionListener = new ListenForAction();
 			addTask.addActionListener(actionListener);
 			removeTask.addActionListener(actionListener);
-//			back.addActionListener(actionListener);
 	    
 	 // Create a new panel and add the text fields and add/remove buttons to it
 	    inputPanel = new JPanel();
 		inputPanel.add(tfDueDate);
 		inputPanel.add(tfTitle);
 		inputPanel.add(tfDetails);
-		inputPanel.add(tfImportant);
-		inputPanel.add(tfRequirements);
-		inputPanel.add(tfCost);
+		inputPanel.add(tfGraded);
+		inputPanel.add(tfSubject);
+		inputPanel.add(tfTotalMarks);
 		
 		inputPanel.add(addTask);
 		inputPanel.add(removeTask);
@@ -104,13 +111,13 @@ public class UserInterface extends JFrame  {
 		public void actionPerformed(ActionEvent e) {
 			if(e.getSource() == addTask) { // If the user clicks Add Customer, add the information into the database
 				// Create variables to hold information to be inserted, and get the info from the text fields
-				String dueDate, title, details, important, requirements, cost;
+				String dueDate, title, details, graded, subject, total_marks;
 				dueDate = tfDueDate.getText();
 				title = tfTitle.getText();
 				details = tfDetails.getText();
-				important = tfImportant.getText();
-				requirements = tfRequirements.getText();
-				cost = tfCost.getText();
+				graded = tfGraded.getText();
+				subject = tfSubject.getText();
+				total_marks = tfTotalMarks.getText();
 				
 				int taskID = 0;
 				
@@ -119,16 +126,16 @@ public class UserInterface extends JFrame  {
 					data.rows.updateString("due_date", dueDate);
 					data.rows.updateString("title", title);
 					data.rows.updateString("details", details);
-					data.rows.updateString("important", important);
-					data.rows.updateString("requirements", requirements);
-					data.rows.updateString("cost", cost);
+					data.rows.updateString("graded", graded);
+					data.rows.updateString("subject", subject);
+					data.rows.updateString("total_marks", total_marks);
 					
 					data.rows.insertRow();
 					data.rows.updateRow();
 					
 					data.rows.last();
 					taskID = data.rows.getInt(1);
-					Object[] task = {taskID, dueDate, title, details, important, requirements, cost};
+					Object[] task = {taskID, dueDate, title, details, graded, subject, total_marks};
 					data.defaultTableModel.addRow(task); // Add the row to the screen
 					errorMessage.setText(""); // Remove the error message if one was displayed
 				} catch (SQLException e2) { // Catch any exceptions and display appropriate errodata.rows
@@ -189,12 +196,12 @@ public class UserInterface extends JFrame  {
 				tfTitle.setText("");
 			} else if(tfDetails.getText().equals("details") && e.getSource() == tfDetails) {
 				tfDetails.setText("");
-			} else if(tfImportant.getText().equals("important") && e.getSource() == tfImportant) {
-				tfImportant.setText("");
-			} else if(tfRequirements.getText().equals("requirements") && e.getSource() == tfRequirements) {
-				tfRequirements.setText("");
-			} else if(tfCost.getText().equals("cost") && e.getSource() == tfCost) {
-				tfCost.setText("");
+			} else if(tfGraded.getText().equals("graded") && e.getSource() == tfGraded) {
+				tfGraded.setText("");
+			} else if(tfSubject.getText().equals("subject") && e.getSource() == tfSubject) {
+				tfSubject.setText("");
+			} else if(tfTotalMarks.getText().equals("total_marks") && e.getSource() == tfTotalMarks) {
+				tfTotalMarks.setText("");
 			}
 		}
 
@@ -205,12 +212,12 @@ public class UserInterface extends JFrame  {
 				tfTitle.setText("title");
 			} else if(tfDetails.getText().equals("") && e.getSource() == tfDetails) {
 				tfDetails.setText("Details");
-			} else if(tfImportant.getText().equals("") && e.getSource() == tfImportant) {
-				tfImportant.setText("Important");
-			} else if(tfRequirements.getText().equals("") && e.getSource() == tfRequirements) {
-				tfRequirements.setText("requirements");
-			} else if(tfCost.getText().equals("") && e.getSource() == tfCost) {
-				tfCost.setText("cost");
+			} else if(tfGraded.getText().equals("") && e.getSource() == tfGraded) {
+				tfGraded.setText("graded");
+			} else if(tfSubject.getText().equals("") && e.getSource() == tfSubject) {
+				tfSubject.setText("subject");
+			} else if(tfTotalMarks.getText().equals("") && e.getSource() == tfTotalMarks) {
+				tfTotalMarks.setText("total_marks");
 			}
 		}
 		
