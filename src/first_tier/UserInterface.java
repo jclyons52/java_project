@@ -4,6 +4,7 @@ package first_tier;
 import java.awt.*;
 
 import javax.swing.*;
+
 import third_tier.PDatabase;
 
 import java.awt.event.*;
@@ -71,13 +72,13 @@ public class UserInterface extends JFrame  {
 	 	// Set button values
 	 		addTask = new JButton("Add Task");
 	 		removeTask = new JButton("Remove Task");
-//	 		back = new JButton("back to menu");
+	 		back = new JButton("back to menu");
 			
 			// Add action listeners to the buttons to listen for clicks
 			ListenForAction actionListener = new ListenForAction();
 			addTask.addActionListener(actionListener);
 			removeTask.addActionListener(actionListener);
-//			back.addActionListener(actionListener);
+			back.addActionListener(actionListener);
 	    
 	 // Create a new panel and add the text fields and add/remove buttons to it
 	    inputPanel = new JPanel();
@@ -93,6 +94,7 @@ public class UserInterface extends JFrame  {
 	    
 	 // Add the table to a scrolling pane
 	 		scrollPane = new JScrollPane( table );
+	 		topPanel.add( back, BorderLayout.NORTH );
 	 		topPanel.add( scrollPane, BorderLayout.CENTER );
 	 		topPanel.add( inputPanel, BorderLayout.SOUTH );
 	 		
@@ -146,6 +148,8 @@ public class UserInterface extends JFrame  {
 					System.out.println(e1.getMessage());
 					errorMessage.setText("To delete a customer, you must fidata.rowst select a row.");
 				}
+			}else if (e.getSource() == back) {
+				
 			}
 		}
 	}
